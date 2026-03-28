@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OverthinkOS v1.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-logo">Overthink<span>OS</span></div>
+  <div class="topbar-version">v1.0</div>
+  <div class="topbar-spacer"></div>
+  <div class="topbar-status"><div class="status-dot online"></div><span>SYSTEM ONLINE</span></div>
+  <button class="btn-apikey" id="apikeyBtn" onclick="openApiModal()">⚙ API KEY</button>
+</div>
+
+<div class="body-wrap">
+  <nav class="sidebar">
+    <div class="sidebar-section">Tools</div>
+    <div class="nav-item active" onclick="switchTo('decision')" id="nav-decision"><span class="nav-icon">🧠</span><span class="nav-label">Decision Engine</span><span class="nav-badge">5 agents</span></div>
+    <div class="nav-item" onclick="switchTo('devil')" id="nav-devil"><span class="nav-icon">⚔️</span><span class="nav-label">Devil's Advocate</span><span class="nav-badge">5 angles</span></div>
+    <div class="nav-item" onclick="switchTo('meeting')" id="nav-meeting"><span class="nav-icon">📅</span><span class="nav-label">Meeting Analyzer</span></div>
+    <div class="nav-item" onclick="switchTo('bureau')" id="nav-bureau"><span class="nav-icon">📋</span><span class="nav-label">Bureaucracy Sim</span><span class="nav-badge">no AI</span></div>
+    <div class="sidebar-section" style="margin-top:8px">Output</div>
+    <div class="nav-item" onclick="switchTo('report')" id="nav-report"><span class="nav-icon">📊</span><span class="nav-label">Generate Report</span></div>
+    <div class="sidebar-footer">
+      <div class="sidebar-api">API STATUS<span id="sidebarApiStatus" class="no">● NOT CONFIGURED</span></div>
+    </div>
+  </nav>
+
+  <div class="main">
+
+    <!-- DECISION ENGINE -->
+    <div class="panel active" id="panel-decision">
+      <div class="panel-header">
+        <div class="panel-icon">🧠</div>
+        <div><div class="panel-title">DECISION ENGINE</div><div class="panel-subtitle">// 5 ai agents. 1 absurd verdict. zero accountability.</div></div>
+      </div>
+      <div class="input-zone">
+        <label>Your Question</label>
+        <input type="text" id="de-question" placeholder="e.g. Should I quit my job to become a professional napper?">
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="de-btn" onclick="runDecision()">ANALYZE</button>
+        <button class="btn btn-secondary" onclick="delear()">CLEAR</button>
+      </div>
+      <div class="pstatus"><div class="pstatus-dot" id="de-dot"></div><span id="de-status">AWAITING QUERY</span></div>
+      <div class="progress-track"><div class="progress-fill" id="de-prog"></div></div>
+      <div id="de-agents"></div>
+      <button class="reveal-btn" id="de-reveal" onclick="deReveal()">🔮 REVEAL FINAL VERDICT</button>
+      <div class="verdict-box" id="de-verdict">
+        <div class="verdict-pre">// SYNTHESIZED CONCLUSION //</div>
+        <div class="verdict-preamble" id="de-preamble"></div>
+        <div class="verdict-text" id="de-verdict-text"></div>
+      </div>
+      <button class="chaos-btn" onclick="toggleChaos()">⚠ CHAOS PROTOCOL — TOGGLE SCREEN INSTABILITY</button>
+    </div>
+
+    <!-- DEVIL'S ADVOCATE -->
+    <div class="panel" id="panel-devil">
+      <div class="panel-header">
+        <div class="panel-icon">⚔️</div>
+        <div><div class="panel-title">DEVIL'S ADVOCATE</div><div class="panel-subtitle">// state an opinion. watch it get obliterated from every angle.</div></div>
+      </div>
+      <div class="input-zone">
+        <label>Your Opinion / Belief / Life Decision</label>
+        <textarea id="dv-input" rows="2" placeholder="e.g. Pineapple belongs on pizza"></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="dv-btn" onclick="runDevil()">DESTROY MY OPINION</button>
+        <button class="btn btn-secondary" onclick="dvclear()">CLEAR</button>
+      </div>
+      <div class="pstatus"><div class="pstatus-dot" id="dv-dot"></div><span id="dv-status">READY TO DESTRUCT</span></div>
+      <div class="progress-track"><div class="progress-fill" id="dv-prog"></div></div>
+      <div id="dv-angles"></div>
+      <div id="dv-summary"></div>
+    </div>
+
+    <!-- MEETING ANALYZER -->
+    <div class="panel" id="panel-meeting">
+      <div class="panel-header">
+        <div class="panel-icon">📅</div>
+        <div><div class="panel-title">MEETING ANALYZER</div><div class="panel-subtitle">// could this have been an email? we will find out.</div></div>
+      </div>
+      <div class="input-zone">
+        <label>Paste Meeting Invite / Description</label>
+        <textarea id="mt-input" rows="4" placeholder="e.g. 'Quick sync to align on the alignment of our syncing strategy. 45 mins, all hands required, no agenda provided.'"></textarea>
+      </div>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="mt-btn" onclick="runMeeting()">ANALYZE NECESSITY</button>
+        <button class="btn btn-secondary" onclick="mtclear()">CLEAR</button>
+      </div>
+      <div class="pstatus"><div class="pstatus-dot" id="mt-dot"></div><span id="mt-status">AWAITING INVITE</span></div>
+      <div class="progress-track"><div class="progress-fill" id="mt-prog"></div></div>
+      <div class="meeting-verdict" id="mt-verdict">
+        <div class="meeting-score-wrap">
+          <div class="meeting-score" id="mt-score">?</div>
+          <div>
+            <div class="meeting-label" id="mt-label">—</div>
+            <div style="font-family:var(--font-m);font-size:10px;color:var(--muted);margin-top:4px;">EMAIL PROBABILITY SCORE</div>
+          </div>
+        </div>
+        <div id="mt-metrics" class="agent-metrics" style="margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--border);"></div>
+        <div class="meeting-analysis" id="mt-analysis"></div>
+      </div>
+    </div>
+
+    <!-- BUREAUCRACY SIM -->
+    <div class="panel" id="panel-bureau">
+      <div class="panel-header">
+        <div class="panel-icon">📋</div>
+        <div><div class="panel-title">BUREAUCRACY SIMULATOR</div><div class="panel-subtitle">// all decisions require prior approval. this will take a while.</div></div>
+      </div>
+      <div class="step-indicator" id="bureau-steps">
+        <div class="step-pip active" id="bp-0"></div><div class="step-pip" id="bp-1"></div>
+        <div class="step-pip" id="bp-2"></div><div class="step-pip" id="bp-3"></div>
+        <div class="step-pip" id="bp-4"></div><div class="step-pip" id="bp-5"></div>
+        <div class="step-pip" id="bp-6"></div><div class="step-pip" id="bp-7"></div>
+        <span style="font-family:var(--font-m);font-size:10px;color:var(--muted);margin-left:4px;" id="bureau-step-label">Step 1 of 8</span>
+      </div>
+      <div class="bureau-step active" id="bureau-0">
+        <div class="bureau-header">REQUEST INITIATION</div>
+        <div class="bureau-form-title">FORM 1-A: INITIAL DECISION REQUEST</div>
+        <div class="input-zone" style="background:var(--surf)">
+          <div class="form-group"><label>What decision do you need to make?</label><input type="text" id="b-decision" placeholder="e.g. Should I get a coffee?"></div>
+          <div class="form-group"><label>Decision Urgency Level</label><select id="b-urgency"><option>Non-urgent (processing time: 6-8 weeks)</option><option>Urgent (processing time: 4-6 weeks)</option><option>Very urgent (processing time: 3-5 weeks)</option><option>DEFCON 1 (processing time: 3-5 weeks)</option></select></div>
+          <div class="form-group"><label>How many stakeholders are affected?</label><select id="b-stakeholders"><option>Just me</option><option>Me and one other person</option><option>A small group (3-5 people)</option><option>Everyone on Earth</option></select></div>
+        </div>
+        <button class="btn btn-primary" onclick="bureauNext(1)">SUBMIT FORM 1-A →</button>
+      </div>
+      <div class="bureau-step" id="bureau-1">
+        <div class="bureau-header">COMPLIANCE DOCUMENTATION</div>
+        <div class="bureau-form-title">FORM 27-B: BACKGROUND VERIFICATION</div>
+        <div style="font-family:var(--font-m);font-size:10px;color:var(--red);margin-bottom:12px;">⚠ Required by Regulation 44.7(c) of the Department of Decision Management Act (2019)</div>
+        <div class="input-zone" style="background:var(--surf)">
+          <div class="form-group"><label>What is your mother's maiden name? (regulatory purposes)</label><input type="text" placeholder="Required"></div>
+          <div class="form-group"><label>What was the name of your first pet?</label><input type="text" placeholder="Required"></div>
+          <div class="form-group"><label>On a scale of 1-10, how decisive are you usually?</label><select><option>1 (extremely indecisive)</option><option>3</option><option>5 (moderately decisive)</option><option>7</option><option>10 (extremely decisive, please explain why you need this form)</option></select></div>
+          <div class="form-group"><label>Have you previously submitted a Form 27-B?</label><select><option>No</option><option>Yes — I have 27-B(R)</option><option>Yes — I do not have 27-B(R) (you will need to file Form 99-X first)</option></select></div>
+        </div>
+        <button class="btn btn-primary" onclick="bureauProcess(2)">SUBMIT FORM 27-B →</button>
+      </div>
+      <div class="bureau-step" id="bureau-2">
+        <div class="bureau-header">SYSTEM PROCESSING</div>
+        <div class="bureau-form-title">REQUEST UNDER REVIEW</div>
+        <div style="text-align:center;padding:30px 0;">
+          <div style="font-size:40px;margin-bottom:16px;">⏳</div>
+          <div style="font-family:var(--font-m);font-size:12px;color:var(--muted);line-height:2;">Validating Form 1-A against Form 27-B...<br>Cross-referencing stakeholder database...<br>Routing to Department of Preliminary Pre-Approvals...</div>
+          <div class="progress-track" style="margin-top:20px;max-width:300px;margin-left:auto;margin-right:auto;"><div class="progress-fill" id="bureau-proc-bar"></div></div>
+        </div>
+      </div>
+      <div class="bureau-step" id="bureau-3">
+        <div class="rejection-box"><div class="rejection-stamp">REJECTED</div><div class="rejection-reason" id="bureau-rejection-text"></div></div>
+        <div style="font-family:var(--font-m);font-size:12px;color:var(--text);margin-bottom:16px;">You may appeal this decision by completing Form 31-A (Appeal of Rejected Decision Request). Note: appeals are non-binding and will be reviewed by the same committee that rejected your request.</div>
+        <button class="btn btn-danger" onclick="bureauNext(4)">FILE APPEAL FORM 31-A →</button>
+      </div>
+      <div class="bureau-step" id="bureau-4">
+        <div class="bureau-header">FORMAL APPEAL</div>
+        <div class="bureau-form-title">FORM 31-A: APPEAL OF REJECTED DECISION REQUEST</div>
+        <div class="input-zone" style="background:var(--surf)">
+          <div class="form-group"><label>In 500 words or fewer, explain why you disagree with the rejection.</label><textarea rows="3" placeholder="I disagree because..."></textarea></div>
+          <div class="form-group"><label>Why should your decision be considered important?</label><textarea rows="2" placeholder="This decision matters because..."></textarea></div>
+          <div class="form-group"><label>Do you accept that this appeal may also be rejected?</label><select><option>Yes, I accept</option><option>No (selecting this will void your appeal)</option></select></div>
+        </div>
+        <button class="btn btn-primary" onclick="bureauProcess(5)">SUBMIT APPEAL →</button>
+      </div>
+      <div class="bureau-step" id="bureau-5">
+        <div class="bureau-header">APPEAL UNDER REVIEW</div>
+        <div class="bureau-form-title">ROUTING TO APPEALS COMMITTEE</div>
+        <div style="text-align:center;padding:30px 0;">
+          <div style="font-size:40px;margin-bottom:16px;">🔄</div>
+          <div style="font-family:var(--font-m);font-size:12px;color:var(--muted);line-height:2;">Convening Appeals Sub-Committee...<br>Reviewing your review of the review...<br>Checking for counter-appeals to your appeal...</div>
+          <div class="progress-track" style="margin-top:20px;max-width:300px;margin-left:auto;margin-right:auto;"><div class="progress-fill" id="bureau-appeal-bar"></div></div>
+        </div>
+      </div>
+      <div class="bureau-step" id="bureau-6">
+        <div class="approved-box">
+          <div class="approved-stamp">APPROVED*</div>
+          <div style="font-family:var(--font-m);font-size:11px;color:var(--muted);">*Conditionally. Please read all conditions.</div>
+          <div style="margin-top:14px;font-family:var(--font-m);font-size:12px;color:var(--text);line-height:1.8;" id="bureau-conditions"></div>
+        </div>
+        <div style="font-family:var(--font-m);font-size:11px;color:var(--muted);margin-bottom:12px;">By clicking "I Accept", you acknowledge all conditions and agree to file Form 88-C (Post-Decision Impact Report) within 30 business days.</div>
+        <button class="btn btn-primary" onclick="bureauNext(7)">I ACCEPT ALL CONDITIONS →</button>
+      </div>
+      <div class="bureau-step" id="bureau-7">
+        <div class="approved-box" style="text-align:center;border-color:var(--cyan);">
+          <div style="font-family:var(--font-d);font-size:14px;letter-spacing:3px;color:var(--muted);margin-bottom:8px;">AFTER EXTENSIVE BUREAUCRATIC DELIBERATION</div>
+          <div style="font-family:var(--font-d);font-size:16px;letter-spacing:2px;color:var(--text);margin-bottom:16px;" id="bureau-final-q"></div>
+          <div style="font-family:var(--font-d);font-size:56px;letter-spacing:4px;color:var(--cyan);line-height:1;" id="bureau-final-v"></div>
+          <div style="font-family:var(--font-m);font-size:10px;color:var(--muted);margin-top:12px;">Processing time: <span id="bureau-time"></span> | Forms submitted: 4 | Trees destroyed: 2</div>
+        </div>
+        <button class="btn btn-secondary" onclick="resetBureau()" style="margin-top:12px;width:100%;">FILE A NEW REQUEST</button>
+      </div>
+    </div>
+
+    <!-- REPORT -->
+    <div class="panel" id="panel-report">
+      <div class="panel-header">
+        <div class="panel-icon">📊</div>
+        <div><div class="panel-title">GENERATE REPORT</div><div class="panel-subtitle">// looks extremely official. means absolutely nothing.</div></div>
+      </div>
+      <div class="report-panel" id="report-content">
+        <div class="empty-state"><div style="font-size:32px;margin-bottom:12px;">📭</div>Run any analysis tool first, then return here to generate a printable report.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- API KEY MODAL -->
+<div class="modal-overlay" id="apiModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeApiModal()">✕</button>
+    <h2>API CONFIGURATION</h2>
+    <p>Enter your OpenAI API key. It is stored only in your browser's localStorage and never sent to any server other than OpenAI.</p>
+    <div class="modal-input">
+      <input type="password" id="modal-key" placeholder="sk-...">
+      <button class="btn btn-primary" onclick="saveApiKey()" style="padding:10px 16px;font-size:14px;">SAVE</button>
+    </div>
+    <div class="modal-status" id="modal-key-status">No key saved.</div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-secondary" onclick="closeApiModal()" style="font-size:12px;padding:7px 14px;">CLOSE</button>
+      <button class="btn btn-danger" onclick="clearApiKey()" style="font-size:12px;padding:7px 14px;">CLEAR KEY</button>
+    </div>
+    <div class="modal-footer">Get an API key at platform.openai.com → API Keys → Create new secret key.<br>Model used: gpt-4o-mini (cost-efficient for demos).</div>
+  </div>
+</div>
+
+<!-- PRINT OVERLAY -->
+<div class="print-overlay" id="printOverlay">
+  <button class="po-print-btn" onclick="window.print()">🖨 PRINT</button>
+  <button class="po-close-btn" onclick="closePrint()">✕ CLOSE</button>
+  <div id="print-body"></div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
